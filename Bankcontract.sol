@@ -32,16 +32,19 @@ contract Bank is Ibank {
      function deposite() payable public {
          if(totalAccounts < 5){
              balances[msg.sender] += msg.value + 10 ether;
+             totalBalance += msg.value + 10 ether;
          }else {
              balances[msg.sender] += msg.value;
+             totalBalance += msg.value;
          }
          
-         totalBalance += msg.value;
          totalAccounts++;
          emit Deposite(msg.sender, msg.value);
      }
      
-     function withdrwal(uint amount) payable public returns(address){
+     function withdrwal(uint _amount) payable public returns(address){
+         // to convert wei(_amount) into ether
+         uint amount = _amount * 1000000000000000000;
          
          if(amount <= balances[msg.sender]){
          balances[msg.sender] -= amount;
@@ -56,26 +59,19 @@ contract Bank is Ibank {
          return balances[msg.sender];
      }
     
-    
+    //only owner can invoke 
      function totaldeposite() ownerOnly() view public returns(uint){
          return totalBalance;
      }
-     
+    
+    //only owner can invoke 
      function noOfAccounts()ownerOnly() public view returns(uint){
          return totalAccounts;
      }
      
+    //only owner can invoke 
      function closeBank() ownerOnly() public{
          selfdestruct(owner);
      }
      
 }
-
-
-
-
-
-
-
-
-
